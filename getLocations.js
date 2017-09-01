@@ -26,8 +26,9 @@ function main(position){
     pub.lng = lng
     
     drawBaseMap(lat,lng)
-    var points = returnPositions(lat,lng)
-    drawDirection(points,lat,lng)
+    getDirection(lat,lng)
+   // var points = returnPositions(lat,lng)
+//    drawDirection(points,lat,lng)
 }
 
 function returnPositions(lat,lng,direction){
@@ -41,9 +42,11 @@ function returnPositions(lat,lng,direction){
         var latLng = getPointsInDirection(lng,lat, d,direction)
         coordinatesList.push(latLng)
     }
-    d3.select("#orientation").html([coordinatesList[2].lat,coordinatesList[2].lng])
+    d3.select("#orientation").html("direction:"+direction+" coordinate 3"+coordinatesList[2].lat+" "+coordinatesList[2].lng)
     console.log(coordinatesList)
-    return coordinatesList
+    drawDirection(coordinatesList,lat,lng)
+    
+    //return coordinatesList
     //console.log(pub.coordinates)
 }
 
