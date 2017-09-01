@@ -42,6 +42,9 @@ function drawBaseMap(lat,lng){
 }
 
 function drawDirection(points,lat,lng){
+    console.log("drawDirection")
+    d3.selectAll(".location").remove()
+    d3.select("#dotTest").html([points[2].lat,points[2].lng])
     //console.log(points)
     var center = [lng, lat]
     var width = Math.max(500, window.innerWidth)

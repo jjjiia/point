@@ -43,8 +43,8 @@ function returnPositions(lat,lng,direction){
         coordinatesList.push(latLng)
     }
     d3.select("#orientation").html("direction:"+direction+" coordinate 3"+coordinatesList[2].lat+" "+coordinatesList[2].lng)
-    console.log(coordinatesList)
     drawDirection(coordinatesList,lat,lng)
+    console.log(coordinatesList)
     
     //return coordinatesList
     //console.log(pub.coordinates)
