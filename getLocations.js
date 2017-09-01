@@ -38,10 +38,10 @@ function returnPositions(lat,lng){
     if(brng==undefined){
        brng = 10
     }else{
-        var brng = getDirection()
+        brng = getDirection()
     }
+    
     console.log(brng)
-    d3.select("#orientation").html("from north: "+brng)
     
     for(var d = 0; d<2; d+=.1){
         var latLng = getPointsInDirection(lng,lat, d,brng)
@@ -58,6 +58,8 @@ function getDirection(){
         window.addEventListener('deviceorientation', function(event) {
                 // console.log(event.alpha + ' : ' + event.beta + ' : ' + event.gamma);
                 var direction = Math.round(event.alpha)
+                d3.select("#orientation").html("from north: "+direction)
+                
                 return direction
         });
     }else{
