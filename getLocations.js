@@ -27,30 +27,23 @@ function main(position){
     
     drawBaseMap(lat,lng)
     var points = returnPositions(lat,lng)
-   // drawDirection(points,lat,lng)
+    drawDirection(points,lat,lng)
 }
 
-function returnPositions(lat,lng){
-        getDirection(lat,lng)
-//    var coordinatesList = []
-//    var brng = getDirection()
-//    console.log(brng)
-//    if(brng==undefined){
-//       brng = 10
-//    }else{
-//        brng = getDirection()
-//    }
-//    d3.select("#orientation").html("from north: "+brng)
-//    
-//    console.log(brng)
-//    
-//    for(var d = 0; d<2; d+=.1){
-//        var latLng = getPointsInDirection(lng,lat, d,brng)
-//        coordinatesList.push(latLng)
-//    }
+function returnPositions(lat,lng,direction){
+        console.log(direction)
+    if(direction ==undefined){
+        direction = 0
+    }
+    var coordinatesList = []
     
-    //pub.coordinates = coordinatesList
- //   return coordinatesList
+    for(var d = 0; d<2; d+=.1){
+        var latLng = getPointsInDirection(lng,lat, d,direction)
+        coordinatesList.push(latLng)
+    }
+    d3.select("#orientation").html([coordinatesList[2].lat,coordinatesList[2].lng])
+    console.log(coordinatesList)
+    return coordinatesList
     //console.log(pub.coordinates)
 }
 
@@ -59,14 +52,8 @@ function getDirection(lat,lng){
         window.addEventListener('deviceorientation', function(event) {
                 // console.log(event.alpha + ' : ' + event.beta + ' : ' + event.gamma);
                 var direction = Math.round(event.alpha)
-                var coordinatesList = []
-                
-                for(var d = 0; d<2; d+=.1){
-                    var latLng = getPointsInDirection(lng,lat, d,direction)
-                    coordinatesList.push(latLng)
-                }
-                drawDirection(coordinatesList,lat,lng)
-                
+                d3.select("#orientation").html("from north: "+direction)
+                returnPositions(lat,lng,direction)
                 return direction
         });
     }else{
