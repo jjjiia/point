@@ -1,0 +1,14 @@
+html, body{
+
+    font-family:"Baskerville"; font-weight: lighter;
+    font-color:#222;
+}
+
+#title{
+    padding:20px;
+    font-size:18px;
+}
+#map{
+    position:relative;
+    float:top;
+}

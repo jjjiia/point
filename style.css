@@ -1,0 +1,103 @@
+@charset "utf-8";
+
+body{
+    font-size:16px;
+    margin:10px;
+    
+}
+.section{
+    border-bottom:1px solid black;
+}
+.title{
+    font-weight:bold;
+    font-size:24px;
+    
+}
+.percent{
+    color:red;
+}
+.value{
+    color:green;
+}
+#censusLabelFCC{
+        padding:20px;
+}
+#coordinates{
+        padding:20px;
+}
+#paragraph{
+    font-size:20px;
+    line-height:120%;
+    padding:20px;
+}
+#map{
+    padding:0px;
+    margin:0px;
+}
+#key{
+    padding:20px;
+    
+}
+.barLabel{
+    font-size:16px;
+}
+.axis text {
+  font: 12px sans-serif;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: none;
+  shape-rendering: crispEdges;
+}
+.barChart{
+    border-bottom:1px solid black;
+    padding:10px;
+    font-size:16px;
+    font-weight:bold;
+}
+.col-sm-4{
+    border:1px solid black;
+}
+path {
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.major_road { stroke: #aaa;  }
+.minor_road { stroke: #bbb; }
+.highway { stroke: #ccc; stroke-width: 1.5px; }
+
+.location{fill:#000;}
+
+@media (min-width: 858px) {
+    #paragraph {
+        font-size: 36px;
+    }
+}
+
+@media (min-width: 780px) {
+    #paragraph {
+        font-size: 24px;
+    }
+}
+
+@media (min-width: 702px) {
+    #paragraph {
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 724px) {
+    #paragraph{
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 623px) {
+    #paragraph {
+        font-size: 16px;
+    }
+}
