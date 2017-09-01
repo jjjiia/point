@@ -42,7 +42,7 @@ function drawBaseMap(lat,lng){
 }
 
 function drawDirection(points,lat,lng){
-    console.log(points)
+    //console.log(points)
     var center = [lng, lat]
     var width = Math.max(500, window.innerWidth)
     var height = Math.max(500, window.innerWidth);
@@ -77,7 +77,7 @@ function drawDirection(points,lat,lng){
                 var projectedLat = projection([d.lat,d.lng])[1]
                 var projectedLng = projection([d.lat,d.lng])[0]
                  
-                 console.log([projectedLat,projectedLng])
+                 //console.log([projectedLat,projectedLng])
                  return projectedLat
              })     
  //   var lineFunction = d3.svg.line()

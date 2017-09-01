@@ -33,12 +33,15 @@ function main(position){
 function returnPositions(lat,lng){
         
     var coordinatesList = []
-    
-    if(getDirection()==undefined){
-        var brng = 30
+    var brng = getDirection()
+    console.log(brng)
+    if(brng==undefined){
+       brng = 30
     }else{
         var brng = getDirection()
     }
+    console.log(brng)
+    
     for(var d = 0; d<2; d+=.1){
         var latLng = getPointsInDirection(lng,lat, d,brng)
         coordinatesList.push(latLng)
@@ -59,6 +62,7 @@ function getDirection(){
         });
     }else{
         d3.select("#orientation").html("no orientation data from device")
+        return undefined
     }
 }
 
