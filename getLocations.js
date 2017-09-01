@@ -40,6 +40,7 @@ function returnPositions(lat,lng){
     }else{
         brng = getDirection()
     }
+    d3.select("#orientation").html("from north: "+brng)
     
     console.log(brng)
     
@@ -58,7 +59,6 @@ function getDirection(){
         window.addEventListener('deviceorientation', function(event) {
                 // console.log(event.alpha + ' : ' + event.beta + ' : ' + event.gamma);
                 var direction = Math.round(event.alpha)
-                d3.select("#orientation").html("from north: "+direction)
                 
                 return direction
         });
