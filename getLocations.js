@@ -19,8 +19,8 @@ function main(position){
     var lat = position.coords.latitude        
     var alt = position.coords.altitude 
     d3.select("#coordinates").html("<strong>Lat:</strong>"+Math.round(lat*1000000)/1000000
-    +"<strong>Lng:</strong>"+Math.round(lng*1000000)/1000000
-    +"<strong>Alt:</strong>"+Math.round(alt*1000000)/1000000)
+    +" <strong>Lng:</strong>"+Math.round(lng*1000000)/1000000
+    +" <strong>Alt:</strong>"+Math.round(alt*1000000)/1000000)
     
     pub.lat = lat
     pub.lng = lng
@@ -36,11 +36,12 @@ function returnPositions(lat,lng){
     var brng = getDirection()
     console.log(brng)
     if(brng==undefined){
-       brng = 30
+       brng = 10
     }else{
         var brng = getDirection()
     }
     console.log(brng)
+    d3.select("#orientation").html("from north: "+brng)
     
     for(var d = 0; d<2; d+=.1){
         var latLng = getPointsInDirection(lng,lat, d,brng)
@@ -57,7 +58,6 @@ function getDirection(){
         window.addEventListener('deviceorientation', function(event) {
                 // console.log(event.alpha + ' : ' + event.beta + ' : ' + event.gamma);
                 var direction = Math.round(event.alpha)
-                d3.select("#orientation").html("from north: "+direction)
                 return direction
         });
     }else{
