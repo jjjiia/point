@@ -7,6 +7,48 @@ Number.prototype.toDeg = function() {
    return this * 180 / Math.PI;
 }
 
+function getLocation() {
+  if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(main);
+  } else {
+      x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+function main(position){
+    var lng = position.coords.longitude
+    var lat = position.coords.latitude        
+    var alt = position.coords.altitude 
+    d3.select("#coordinates").html("<strong>Lat:</strong>"+Math.round(lat*1000000)/1000000
+    +"<strong>Lng:</strong>"+Math.round(lng*1000000)/1000000
+    +"<strong>Alt:</strong>"+Math.round(alt*1000000)/1000000)
+    
+    pub.lat = lat
+    pub.lng = lng
+    
+    drawBaseMap(lat,lng)
+    var points = returnPositions(lat,lng)
+    drawDirection(points,lat,lng)
+}
+
+function returnPositions(lat,lng){
+        
+    var coordinatesList = []
+    
+    if(getDirection()==undefined){
+        var brng = 30
+    }else{
+        var brng = getDirection()
+    }
+    for(var d = 0; d<2; d+=.1){
+        var latLng = getPointsInDirection(lng,lat, d,brng)
+        coordinatesList.push(latLng)
+    }
+    
+    pub.coordinates = coordinatesList
+    return coordinatesList
+    //console.log(pub.coordinates)
+}
+
 function getDirection(){
     if (window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientation', function(event) {
@@ -19,6 +61,7 @@ function getDirection(){
         d3.select("#orientation").html("no orientation data from device")
     }
 }
+
 
 function getPointsInDirection(lng,lat, dist,brng){
     dist = dist/3959 //6371km;  
@@ -34,14 +77,7 @@ function getPointsInDirection(lng,lat, dist,brng){
                                 Math.cos(dist) - Math.sin(lat1) *
                                 Math.sin(lat2));
     //console.log([lat2.toDeg(),lon2.toDeg()])
-    return [Math.round(lat2.toDeg()*1000000)/1000000,Math.round(lon2.toDeg()*1000000)/1000000]
-}
-function getLocation() {
-  if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(returnPositions);
-  } else {
-      x.innerHTML = "Geolocation is not supported by this browser.";
-  }
+    return {lng:Math.round(lat2.toDeg()*1000000)/1000000,lat:Math.round(lon2.toDeg()*1000000)/1000000}
 }
 
 function formatPathData(json){
@@ -167,55 +203,7 @@ function getData(geoid,tableCode){
                 getCensusIdList()
             }
         })
-    }
-    
+    }   
 }
-function drawCompass(brng){
-    var wh = 200
-    var svg = d3.select("#compass").append("svg").attr("width",wh).attr("height",wh)
-    var compass = svg.append("g").attr("transform", "translate(" + wh/2 + "," + wh/2 + ")")
-    compass.append("text").text("N").attr("x",wh/2).attr("y",0).attr("text-anchor","middle")
 
-    compass.append("g").append("circle").attr("r",wh/2*.6).style("fill","#fff").style("stroke","#000").style("stroke-width",2).attr("class","compass")
-    compass.selectAll("g.compass").append("circle").attr("r",5).style("fill","none").style("stroke","#000").style("stroke-width",2).attr("class","compass")
-    
-  //  var rect = compass.append("g").append("rect").attr("x",wh/2).attr("y",wh/2).attr("width",4).attr("height",wh/2*.8-2).style("fill","#000").style("opacity",1)
-    //compass.attr('transform', "rotate(10)");
-}
-function returnPositions(position){
-    var lng = position.coords.longitude
-    var lat = position.coords.latitude        
-    var alt = position.coords.altitude 
-    
-    pub.lat = lat
-    pub.lng = lng
-    var coordinatesList = []
-    drawCompass(45)
-    
-    if(getDirection()==undefined){
-        var brng = 0
-    }else{
-        var brng = getDirection()
-    }
-    for(var d = 0; d<4; d+=.1){
-        //console.log(d)
-        var latLng = getPointsInDirection(lng,lat, d,brng)
-       // console.log(latLng)
-        coordinatesList.push(latLng)
-       // var fccUrl = "https://data.fcc.gov/api/block/2010/find?format=jsonp&latitude="+latLng[0]+"&longitude="+latLng[1]       
-        //    getCensusId(fccUrl,"jsonp","formatPathData")
-    }
-    
-    pub.coordinates = coordinatesList
-   // var urlList = [] 
-   // for(var c in pub.coordinates){
-   //     var latLng = pub.coordinates[c]
-   //     //console.log(latLng)
-   //     var fccUrl = "https://data.fcc.gov/api/block/2010/find?format=jsonp&latitude="+latLng[0]+"&longitude="+latLng[1]
-   //     urlList.push(fccUrl)
-   // }
-   // pub.urlList = urlList
-    console.log(pub.coordinates)
-    getCensusIdList()
-}
 getLocation()

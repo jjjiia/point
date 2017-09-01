@@ -1,23 +1,12 @@
-function drawMap(geoData){
-    var svg = d3.select("#map").append("svg").attr("width",300).attr("height",300)
-//    
-    var center = [Math.round(pub.coordinates[1]*10000)/10000,Math.round(pub.coordinates[0]*10000)/10000]
-//    console.log(center)
-//  var center = [-122.4183, 37.7750]
-    var div = "map"
-//
-    var width = Math.max(500, window.innerWidth),
-      height = Math.max(500, window.innerWidth);
-//    var width = 300
-//    var height = 300
-//
-    drawBaseMap(width,height,div,center)  
-    drawMapLayer(geoData,width,height)  
-    drawBarKey()
+function drawBaseMap(lat,lng){
+    console.log("draw base map")
     
-}
-function drawBaseMap(width,height,div,center){
-
+    var div = "map"
+    var width = Math.max(500, window.innerWidth)
+    var height = Math.max(500, window.innerWidth);
+    var svg = d3.select("#map").append("svg").attr("width",width).attr("height",height)
+    var center = [lng, lat]
+    
     var tiler = d3.geo.tile()
         .size([width, height]);
 
@@ -52,6 +41,62 @@ function drawBaseMap(width,height,div,center){
         });
 }
 
+function drawDirection(points,lat,lng){
+    console.log(points)
+    var center = [lng, lat]
+    var width = Math.max(500, window.innerWidth)
+    var height = Math.max(500, window.innerWidth);
+    var projection = d3.geo.mercator()
+        .center(center)
+        .scale((1 << 21) / 2 / Math.PI)
+        .translate([width / 2, height / 2]);
+    var svg = d3.select("#map svg")
+        
+    var cross = d3.svg.symbol().type('cross')
+    		.size(40);
+        
+    svg.append("path").attr("class","location")
+        .attr("d",cross)
+    	.attr('transform',function(d,i){
+            var projectedLng = projection([lng,lat])[0]
+            var projectedLat = projection([lng,lat])[1]
+             return "translate("+projectedLng+","+projectedLat+") rotate(-45)"; 
+             });            
+    
+    svg.selectAll("circle").append("g").attr("class","dot")
+            .data(points)
+             .enter()
+             .append("circle")
+             .attr("r",2)
+             .attr("fill","#000")
+             .attr("cx",function(d){
+                var projectedLng = projection([d.lat,d.lng])[0]
+                 return projectedLng
+             })  
+             .attr("cy",function(d){
+                var projectedLat = projection([d.lat,d.lng])[1]
+                var projectedLng = projection([d.lat,d.lng])[0]
+                 
+                 console.log([projectedLat,projectedLng])
+                 return projectedLat
+             })     
+ //   var lineFunction = d3.svg.line()
+ //       .x(function(d){
+ //           return projection([d.lng,d.lat])[0]
+ //       })
+ //       .y(function(d){
+ //           return projection([d.lng,d.lat])[1]})
+ //       .interpolate("linear");
+        //push data, add path
+        //[topojson.object(geoData, geoData.geometry)]   
+     
+    //svg.selectAll(".direction")
+    //    .append("path")
+    //	.attr("class","direction")
+    //	.attr("d",lineFunction(points))
+    //	.attr("stroke","red")
+    //    .attr("stroke-width",5)    
+}
 function drawMapLayer(geoData,width,height){
     
 //    var width = 300
