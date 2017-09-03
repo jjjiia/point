@@ -8,5 +8,10 @@ var pub = {
     coordinates:[],
     coordinatesCounter:0,
     coordinateIds:[],
-    coordinatesData:{}
+    coordinatesData:{},
+    coordIndex:0,
+    coordinatesList:null,
+    ids:[],
+    geoData:{},
+    returnedData:{}
 }

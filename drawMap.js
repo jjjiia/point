@@ -2,8 +2,10 @@ function drawBaseMap(lat,lng){
     console.log("draw base map")
     
     var div = "map"
-    var width = Math.max(500, window.innerWidth)
-    var height = Math.max(500, window.innerWidth);
+   // var width = Math.max(300, window.innerWidth)
+   // var height = Math.max(300, window.innerWidth);
+   var width = window.innerWidth
+    var height = window.innerWidth
     var svg = d3.select("#map").append("svg").attr("width",width).attr("height",height)
     var center = [lng, lat]
     
@@ -35,7 +37,7 @@ function drawBaseMap(lat,lng){
             g.selectAll("path")
               .data(json.features.sort(function(a, b) { return a.properties.sort_key - b.properties.sort_key; }))
             .enter().append("path")
-              .attr("class", function(d) { return d.properties.kind; })
+              .attr("class", function(d) { return d.properties.kind +" basemap"; })
               .attr("d", path);
           });
         });
@@ -44,11 +46,12 @@ function drawBaseMap(lat,lng){
 function drawDirection(points,lat,lng){
     console.log("drawDirection")
     d3.selectAll(".location").remove()
+    
     d3.select("#dotTest").html([points[2].lat,points[2].lng])
     //console.log(points)
     var center = [lng, lat]
-    var width = Math.max(500, window.innerWidth)
-    var height = Math.max(500, window.innerWidth);
+    var width = window.innerWidth
+    var height = window.innerWidth
     var projection = d3.geo.mercator()
         .center(center)
         .scale((1 << 21) / 2 / Math.PI)
@@ -100,74 +103,83 @@ function drawDirection(points,lat,lng){
     //	.attr("stroke","red")
     //    .attr("stroke-width",5)    
 }
-function drawMapLayer(geoData,width,height){
+
+function getTitle(code,geoId){
+    var table = code.substr(0, code.length -3)
+    var codeTitle = pub.returnedData[geoId].tables[table].columns[code].name
+    return codeTitle   
+}
+function getValue(code,geoId){
+    var table = code.substr(0, code.length -3)
+    var codeValue = pub.returnedData[geoId].data[Object.keys(pub.returnedData[geoId].data)][table].estimate[code]
+    return codeValue
+}
+function getPercent(code,geoId){
+    var table = code.substr(0, code.length -3)
+    var codeValue = pub.returnedData[geoId].data[Object.keys(pub.returnedData[geoId].data)][table].estimate[code]
+    var totalCode = table+"001"
+    var totalValue = pub.returnedData[geoId].data[Object.keys(pub.returnedData[geoId].data)][table].estimate[totalCode]
+    var percent = codeValue/totalValue*100
+    console.log([codeValue,])
+    return percent
+}
+function returnColumnData(columnCode){
+    console.log(pub.returnedData)
+    var geoIds = Object.keys(pub.returnedData)
+    var columnData = {}
+    for(var g in geoIds){
+        var geoId = geoIds[g]
+        var title = getTitle(columnCode,geoId)
+        var value = getValue(columnCode,geoId)
+        var percent = getPercent(columnCode,geoId)
+        columnData[geoId]={title:title,value:value,percent:percent}
+    }
+    return columnData
+}
+function setupCensusGeoMaps(geoData){
     
-//    var width = 300
-//    var height = 300
-    
+    var columnData = returnColumnData("B02001002")
+    for(var i in geoData){
+        var blockGroupData = geoData[i]
+        drawCensusGeoMap(blockGroupData,columnData)
+    }
+}
+function drawCensusGeoMap(geoData,columnData){
+    console.log(geoData)
+    var geoId = geoData.properties["full_geoid"]   
+    var width = window.innerWidth
+    var height = window.innerWidth
+    var fillScale = d3.scale.linear().domain([0,100]).range(["green","red"])
     var colors = geoColors
-    var svg = d3.select("#map svg")
-        
-        //need to generalize projection into global var later
-    var center = [pub.coordinates[1],pub.coordinates[0]]
-    var lat = center[1]
-    var lng = center[0]
-    
+    var svg = d3.select("#map svg")//.append("g").attr("class","intersect")
+    var center =pub.coordinates[0]
+    var lat = center.lng
+    var lng = center.lat
     var projection = d3.geo.mercator()
         .scale((1 << 21) / 2 / Math.PI)
-    .center(center)		    
+        .center([lng,lat])		    
         .translate([width/2,height/2])
 
-        //d3 geo path uses projections, it is similar to regular paths in line graphs
-    var path = d3.geo.path().projection(projection);
     var lineFunction = d3.svg.line()
-        .x(function(d){
-            return projection([d[0],d[1]])[0]
-        })
-        .y(function(d){
-           // console.log(projection([d[0],d[1]])[1])
-            return projection([d[0],d[1]])[1]})
+        .x(function(d){ return projection([d[0],d[1]])[0]})
+        .y(function(d){return projection([d[0],d[1]])[1]})
         .interpolate("linear");
-        //push data, add path
-        //[topojson.object(geoData, geoData.geometry)]   
          
-	svg.selectAll("path")
-        .append("path")
-		.attr("class","county")
-		.attr("d",lineFunction(geoData["countyGeo"].geometry.coordinates[1]))
-		.attr("stroke",colors.county)
+	svg.append("path")
+		.attr("class","intersected2")
+		.attr("d",lineFunction(geoData.geometry.coordinates[0]))
+		//.attr("stroke","red")
+        .attr("stroke",function(){
+            return "none"
+            console.log(fillScale(columnData[geoId].percent))
+            return fillScale(columnData[geoId].percent)
+        })
+        .attr("fill",function(){
+            return fillScale(columnData[geoId].percent)
+        })
         .attr("stroke-width",5)
-        .attr("fill",colors.county) 
-        .attr("opacity",1)    
+        .attr("fill-opacity",.5)    
 
-	svg
-        .append("path")
-		.attr("class","tract")
-		.attr("d",lineFunction(geoData["tractGeo"].geometry.coordinates[0]))
-		.attr("stroke",colors.tract)
-        .attr("fill",colors.tract)  
-        .attr("stroke-width",4)
-        .attr("opacity",1)        
-        
-	svg
-        .append("path")
-		.attr("class","blockGroup")
-		.attr("d",lineFunction(geoData["blockGeo"].geometry.coordinates[0]))
-		.attr("stroke",colors.blockGroup)
-        .attr("stroke-width",2)
-        .attr("fill",colors.blockGroup)
-        .attr("opacity",1)
-
-    var cross = d3.svg.symbol().type('cross')
-			.size(20);
-            
-    svg.append("path").attr("class","location")
-        .attr("d",cross)
-		.attr('transform',function(d,i){
-            var projectedLng = projection([lng,lat])[0]
-            var projectedLat = projection([lng,lat])[1]
-             return "translate("+projectedLng+","+projectedLat+") rotate(-45)"; 
-             });
 }
 
 function showError(error) {
