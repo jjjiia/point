@@ -43,7 +43,7 @@ function returnPositions(lat,lng,direction){
         coordinatesList.push(latLng)
     }
     d3.select("#orientation").html("direction:"+direction+" coordinate 3"+coordinatesList[2].lat+" "+coordinatesList[2].lng)
-    drawDirection(coordinatesList,lat,lng)
+  //  drawDirection(coordinatesList,lat,lng)
     pub.coordinates = coordinatesList
     getCensusIdList()
    // var coords = coordinatesList[pub.coordIndex]
