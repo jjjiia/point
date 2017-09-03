@@ -35,7 +35,7 @@ function returnPositions(lat,lng,direction){
     if(direction ==undefined){
         direction = 20
     }
-    direction = 20
+   // direction = 20
     var coordinatesList = []
     
     for(var d = 0; d<2; d+=.05){
