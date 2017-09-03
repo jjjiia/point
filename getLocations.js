@@ -25,10 +25,9 @@ function main(position){
     pub.lat = lat
     pub.lng = lng
     
-    drawBaseMap(lat,lng)
+//    drawBaseMap(lat,lng)
     getDirection(lat,lng)
-   // var points = returnPositions(lat,lng)
-//    drawDirection(points,lat,lng)
+//
 }
 
 function returnPositions(lat,lng,direction){
@@ -105,7 +104,7 @@ function getPointsInDirection(lng,lat, dist,brng){
                                 Math.cos(dist) - Math.sin(lat1) *
                                 Math.sin(lat2));
     //console.log([lat2.toDeg(),lon2.toDeg()])
-    return {lng:Math.round(lat2.toDeg()*1000000)/1000000,lat:Math.round(lon2.toDeg()*1000000)/1000000}
+    return {lat:Math.round(lat2.toDeg()*1000000)/1000000,lng:Math.round(lon2.toDeg()*1000000)/1000000}
 }
 
 
@@ -178,24 +177,29 @@ function getCensusIdList(){
   //  console.log([pub.coordinatesCounter,pub.coordinates.length-1])
     if(pub.coordinatesCounter==pub.coordinates.length-1){
        // console.log(pub.geoData)
-        setupCensusGeoMaps(pub.geoData)
+        setupCensusGeoMaps()
         return
     }
     var coordinate = pub.coordinates[pub.coordinatesCounter]
   //  console.log(coordinate)
-    var url = "https://data.fcc.gov/api/block/2010/find?format=jsonp&latitude="+coordinate.lng+"&longitude="+coordinate.lat
+    var url = "https://data.fcc.gov/api/block/2010/find?format=jsonp&latitude="+coordinate.lat+"&longitude="+coordinate.lng
 //    console.log(url)
     $.ajax({
     url: url,
     async:true,
     dataType:"jsonp",
     success:function(data){
-            var blockGroupid = "15000US"+data.Block.FIPS.slice(0,12)
+            var blockGroupId = "15000US"+data.Block.FIPS.slice(0,12)
            // console.log(blockGroupid)
             pub.coordinatesCounter=pub.coordinatesCounter+1
             if(pub.coordinatesCounter<pub.coordinates.length){
-                pub.coordinateIds.push(blockGroupid)
-                getGeoData(blockGroupid)
+            var finishedIds = Object.keys(pub.returnedData)
+                if(finishedIds.indexOf(blockGroupId)>-1){
+                    getCensusIdList()
+                }else{
+                   // pub.coordinateIds.push(blockGroupid)   
+                    getData(blockGroupId)
+                }
             }
         }
     });
@@ -213,6 +217,7 @@ function getData(geoid){
         getCensusIdList()
     });  
 }
+
 function getGeoData(geoid,tableCode){
     
     var censusReporter = "https://api.censusreporter.org/1.0/geo/tiger2015/"+geoid+"?geom=true"

@@ -6,7 +6,8 @@ function drawBaseMap(lat,lng){
    // var height = Math.max(300, window.innerWidth);
    var width = window.innerWidth
     var height = window.innerWidth
-    var svg = d3.select("#map").append("svg").attr("width",width).attr("height",height)
+    var svg = d3.select("#map svg")
+   
     var center = [lng, lat]
     
     var tiler = d3.geo.tile()
@@ -60,12 +61,12 @@ function drawDirection(points,lat,lng){
         
     var cross = d3.svg.symbol().type('cross')
     		.size(40);
-        
+    var startingPoint = points[0]
     svg.append("path").attr("class","location")
         .attr("d",cross)
     	.attr('transform',function(d,i){
-            var projectedLng = projection([lng,lat])[0]
-            var projectedLat = projection([lng,lat])[1]
+            var projectedLng = projection([startingPoint.lng,startingPoint.lat])[0]
+            var projectedLat = projection([startingPoint.lng,startingPoint.lat])[1]
              return "translate("+projectedLng+","+projectedLat+") rotate(-45)"; 
              });            
     
@@ -73,15 +74,14 @@ function drawDirection(points,lat,lng){
             .data(points)
              .enter()
              .append("circle")
-             .attr("r",2)
-             .attr("fill","#000")
+             .attr("r",1)
+             .attr("fill","green")
              .attr("cx",function(d){
-                var projectedLng = projection([d.lat,d.lng])[0]
+                var projectedLng = projection([d.lng,d.lat])[0]
                  return projectedLng
              })  
              .attr("cy",function(d){
-                var projectedLat = projection([d.lat,d.lng])[1]
-                var projectedLng = projection([d.lat,d.lng])[0]
+                var projectedLat = projection([d.lng,d.lat])[1]
                  
                  //console.log([projectedLat,projectedLng])
                  return projectedLat
@@ -120,7 +120,6 @@ function getPercent(code,geoId){
     var totalCode = table+"001"
     var totalValue = pub.returnedData[geoId].data[Object.keys(pub.returnedData[geoId].data)][table].estimate[totalCode]
     var percent = codeValue/totalValue*100
-    console.log([codeValue,])
     return percent
 }
 function returnColumnData(columnCode){
@@ -136,13 +135,21 @@ function returnColumnData(columnCode){
     }
     return columnData
 }
-function setupCensusGeoMaps(geoData){
-    
+function setupCensusGeoMaps(){
+    var midpointIndex = Math.round(pub.coordinates.length/2)
+    var midpoint = pub.coordinates[midpointIndex] 
+    //console.log(midpoint)
+   var width = window.innerWidth
+    var height = window.innerWidth
+    var svg = d3.select("#map").append("svg").attr("width",width).attr("height",height)
+    drawBaseMap(midpoint.lat,midpoint.lng)
+    drawDirection(pub.coordinates,midpoint.lat,midpoint.lng)
+        
     var columnData = returnColumnData("B02001002")
-    for(var i in geoData){
-        var blockGroupData = geoData[i]
-        drawCensusGeoMap(blockGroupData,columnData)
-    }
+    //for(var i in geoData){
+    //    var blockGroupData = geoData[i]
+    //    drawCensusGeoMap(blockGroupData,columnData)
+    //}
 }
 function drawCensusGeoMap(geoData,columnData){
     console.log(geoData)
