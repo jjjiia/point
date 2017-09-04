@@ -30,10 +30,25 @@ function main(position){
 //
 }
 
+function testNewGeocoder(coordinates){
+    for(var c in coordinates){
+        var lat = coordinates[c].lat
+        var lng = coordinates[c].lng
+        var url = "https://geoservices.tamu.edu/Services/CensusIntersection/WebService/v04_01/HTTP/default.aspx?lat="
+        + lat
+         +"&lon="
+        +lng
+        + "&censusYear=2010&apikey=fd17e30136de494ca87b12678979cbe9&format=json&notStore=false&version=4.10"
+         $.getJSON(url, function( data ) {
+            console.log(data)
+         });
+         }    
+}
+
 function returnPositions(lat,lng,direction){
      //   console.log(direction)
-    if(direction ==undefined){
-        direction = 20
+    if(direction ==undefined || direction ==0){
+        direction = 30
     }
    // direction = 20
     var coordinatesList = []
@@ -44,7 +59,7 @@ function returnPositions(lat,lng,direction){
         console.log(latLng)
         coordinatesList.push(latLng)
     }
-    var midpointIndex = Math.round(coordinatesList.length/2)
+    var midpointIndex = 0//Math.round(coordinatesList.length/2)
     var midpoint = coordinatesList[midpointIndex] 
     pub.midpoint = midpoint
    // console.log(coordinatesList)
@@ -53,6 +68,8 @@ function returnPositions(lat,lng,direction){
   //  d3.select("#orientation").html("direction:"+direction+" coordinate 3"+coordinatesList[2].lat+" "+coordinatesList[2].lng)
   //  drawDirection(coordinatesList,lat,lng)
     pub.coordinates = coordinatesList
+   // testNewGeocoder(coordinatesList)
+    
     getCensusIdList()
    // var coords = coordinatesList[pub.coordIndex]
    // var fccUrl = "https://data.fcc.gov/api/block/2010/find?format=jsonp&latitude="+coords.lng+"&longitude="+coords.lat      
