@@ -15,11 +15,12 @@ var pub = {
     geoData:{},
     returnedData:{},
     midpoint:null,
-    distance:3,
-    increment:.5,
-    zoom:21
+    distance:0.6,
+    increment:0.1,
+    points:10,
+    zoom:23
 }
-pub.increment = pub.distance/5
+pub.increment = pub.distance/pub.points
 var tableCodesToDraw = {
     
 }

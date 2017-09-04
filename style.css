@@ -113,7 +113,10 @@ path {
   shape-rendering: crispEdges;
 }
 .axis text {
-  font: 12px sans-serif;
-  color: #aaa;
-  
+  font: 10px sans-serif;
+  fill: #aaa;
+}
+.tableTitle{
+    font:12px sans-serif;
+    width:300px;
 }
