@@ -20,11 +20,14 @@ body{
 .value{
     color:green;
 }
-#censusLabelFCC{
-        padding:20px;
+#orientation{
+        padding:10px;
+        background-color:rgba(255,255,255,.3);
+        
 }
 #coordinates{
-        padding:20px;
+        padding:10px;
+        background-color:rgba(255,255,255,.6);
 }
 #paragraph{
     font-size:20px;
@@ -103,4 +106,14 @@ path {
     #paragraph {
         font-size: 16px;
     }
+}
+.axis path {
+  fill: none;
+  stroke: #aaa;
+  shape-rendering: crispEdges;
+}
+.axis text {
+  font: 12px sans-serif;
+  color: #aaa;
+  
 }

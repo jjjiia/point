@@ -25,8 +25,8 @@ function main(position){
     pub.lat = lat
     pub.lng = lng
     
-//    drawBaseMap(lat,lng)
     getDirection(lat,lng)
+//    drawBaseMap(lat,lng)
 //
 }
 
@@ -38,11 +38,19 @@ function returnPositions(lat,lng,direction){
    // direction = 20
     var coordinatesList = []
     
-    for(var d = 0; d<2; d+=.05){
+    for(var d = 0; d<=pub.distance; d+=pub.increment){
+        console.log(d)
         var latLng = getPointsInDirection(lng,lat, d,direction)
+        console.log(latLng)
         coordinatesList.push(latLng)
     }
-    d3.select("#orientation").html("direction:"+direction+" coordinate 3"+coordinatesList[2].lat+" "+coordinatesList[2].lng)
+    var midpointIndex = Math.round(coordinatesList.length/2)
+    var midpoint = coordinatesList[midpointIndex] 
+    pub.midpoint = midpoint
+   // console.log(coordinatesList)
+    drawBaseMap(midpoint.lat,midpoint.lng)
+    
+  //  d3.select("#orientation").html("direction:"+direction+" coordinate 3"+coordinatesList[2].lat+" "+coordinatesList[2].lng)
   //  drawDirection(coordinatesList,lat,lng)
     pub.coordinates = coordinatesList
     getCensusIdList()
@@ -91,6 +99,9 @@ function getDirection(lat,lng){
 
 
 function getPointsInDirection(lng,lat, dist,brng){
+    d3.select("#orientation").html("direction: "+brng)
+    
+    
     dist = dist/3959 //6371km;  
     brng = brng.toRad(); 
     
@@ -174,37 +185,37 @@ function formatDataForCharts(data,tableCode){
 }
 
 function getCensusIdList(){
-  //  console.log([pub.coordinatesCounter,pub.coordinates.length-1])
-    if(pub.coordinatesCounter==pub.coordinates.length-1){
-       // console.log(pub.geoData)
+    if(pub.coordinatesCounter==pub.coordinates.length){
+        console.log("loop return")
         setupCensusGeoMaps()
         return
     }
+   // if(pub.coordinatesCounter==pub.coordinates.length){
+   //     setupCensusGeoMaps()
+   //     return
+   // }
     var coordinate = pub.coordinates[pub.coordinatesCounter]
-  //  console.log(coordinate)
     var url = "https://data.fcc.gov/api/block/2010/find?format=jsonp&latitude="+coordinate.lat+"&longitude="+coordinate.lng
-//    console.log(url)
     $.ajax({
     url: url,
     async:true,
     dataType:"jsonp",
     success:function(data){
             var blockGroupId = "15000US"+data.Block.FIPS.slice(0,12)
-           // console.log(blockGroupid)
+            console.log("id")
+            pub.coordinates[pub.coordinatesCounter]["id"]=blockGroupId
             pub.coordinatesCounter=pub.coordinatesCounter+1
-            if(pub.coordinatesCounter<pub.coordinates.length){
             var finishedIds = Object.keys(pub.returnedData)
                 if(finishedIds.indexOf(blockGroupId)>-1){
-                    getCensusIdList()
+                        getCensusIdList()
                 }else{
-                   // pub.coordinateIds.push(blockGroupid)   
                     getData(blockGroupId)
                 }
-            }
         }
     });
 }
 function getData(geoid){
+   
     var t1 = "B01003,B01002,B25002,B02001,B25003,B07201,B15003"
     var t2 = ",B08301,B08302,B08303"
     var t3 = ",B25064,B15012,B16002,B19001,B27010,B19013"
