@@ -47,8 +47,8 @@ function testNewGeocoder(coordinates){
 
 function returnPositions(lat,lng,direction){
      //   console.log(direction)
-    if(direction ==undefined){
-        direction = 100
+    if(direction ==undefined||direction==0){
+        direction = 140
     }
    // direction = 20
     var coordinatesList = []

@@ -48,6 +48,9 @@ function drawDirection(points,lat,lng){
     console.log("drawDirection")
     d3.selectAll(".location").remove()
     
+    var rData = returnColumnData("B19013001","value")
+    console.log(rData)
+    var rScale = d3.scale.linear().domain([10000,300000]).range([2,20])
     d3.select("#dotTest").html([points[2].lat,points[2].lng])
     //console.log(points)
     var center = [lng, lat]
@@ -74,9 +77,15 @@ function drawDirection(points,lat,lng){
             .data(points)
              .enter()
              .append("circle")
-             .attr("r",2)
+             .attr("r",function(d){
+             
+                 return rScale(rData[d.id].value)
+             })
              .attr("fill","red")
-             .attr("opacity",.5)
+             .attr("opacity",1)
+             .attr("class",function(d){
+                 return d.id
+             })
              .attr("cx",function(d){
                 var projectedLng = projection([d.lng,d.lat])[0]
                  return projectedLng
