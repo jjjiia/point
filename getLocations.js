@@ -70,8 +70,6 @@ function returnPositions(lat,lng,direction){
    // getData()
     getCensusIdList()
   //getDataForAllGeos()
-    window.removeEventListener('deviceorientation',function(event){
-    })
     return
 }
 function getId(json){
@@ -105,7 +103,10 @@ function getDirection(lat,lng){
                 var direction = Math.round(event.alpha)
                 d3.select("#orientation").html("from north: "+direction)
                 pub.direction = direction
-                returnPositions(lat,lng,pub.direction)
+                if(pub.eventCounter==0){
+                    returnPositions(lat,lng,pub.direction)
+                    pub.eventCounter +=1    
+                }
                 
                 
                 return direction
