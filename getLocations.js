@@ -115,7 +115,6 @@ function getDirection(lat,lng){
 
 
 function getPointsInDirection(lng,lat, dist,brng){
-    d3.select("#orientation").html("direction: "+brng)
     
     
     dist = dist/3959 //6371km;  
