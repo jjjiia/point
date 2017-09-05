@@ -70,6 +70,9 @@ function returnPositions(lat,lng,direction){
    // getData()
     getCensusIdList()
   //getDataForAllGeos()
+    window.removeEventListener('deviceorientation',function(event){
+    })
+    return
 }
 function getId(json){
     //console.log(json)
@@ -101,9 +104,10 @@ function getDirection(lat,lng){
                 // console.log(event.alpha + ' : ' + event.beta + ' : ' + event.gamma);
                 var direction = Math.round(event.alpha)
                 d3.select("#orientation").html("from north: "+direction)
-                    returnPositions(lat,lng,direction)
-                window.removeEventListener('deviceorientation',function(event){
-                })
+                pub.direction = direction
+                returnPositions(lat,lng,pub.direction)
+                
+                
                 return direction
         });
         return

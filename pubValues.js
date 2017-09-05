@@ -20,7 +20,8 @@ var pub = {
     points:30,
     zoom:23,
     uniqueIds:[],
-    uniqueIdsCounter:0
+    uniqueIdsCounter:0,
+    direction:0
 }
 pub.increment = pub.distance/pub.points
 var tableCodesToDraw = {
