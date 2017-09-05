@@ -101,7 +101,9 @@ function getDirection(lat,lng){
                 // console.log(event.alpha + ' : ' + event.beta + ' : ' + event.gamma);
                 var direction = Math.round(event.alpha)
                 d3.select("#orientation").html("from north: "+direction)
-                returnPositions(lat,lng,direction)
+                    returnPositions(lat,lng,direction)
+                window.removeEventListener('deviceorientation',function(event){
+                })
                 return direction
         });
         return
