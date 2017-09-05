@@ -48,15 +48,15 @@ function testNewGeocoder(coordinates){
 function returnPositions(lat,lng,direction){
      //   console.log(direction)
     if(direction ==undefined || direction ==0){
-        direction = 30
+        direction = 100
     }
    // direction = 20
     var coordinatesList = []
     
     for(var d = 0; d<=pub.distance; d+=pub.increment){
-        console.log(d)
+      //  console.log(d)
         var latLng = getPointsInDirection(lng,lat, d,direction)
-        console.log(latLng)
+      //  console.log(latLng)
         coordinatesList.push(latLng)
     }
     var midpointIndex = 0//Math.round(coordinatesList.length/2)
@@ -65,15 +65,11 @@ function returnPositions(lat,lng,direction){
    // console.log(coordinatesList)
     drawBaseMap(midpoint.lat,midpoint.lng)
     
-  //  d3.select("#orientation").html("direction:"+direction+" coordinate 3"+coordinatesList[2].lat+" "+coordinatesList[2].lng)
-  //  drawDirection(coordinatesList,lat,lng)
     pub.coordinates = coordinatesList
    // testNewGeocoder(coordinatesList)
-    
+   // getData()
     getCensusIdList()
-   // var coords = coordinatesList[pub.coordIndex]
-   // var fccUrl = "https://data.fcc.gov/api/block/2010/find?format=jsonp&latitude="+coords.lng+"&longitude="+coords.lat      
-   // getCensusId(fccUrl,"jsonp","getId")      
+  //getDataForAllGeos()
 }
 function getId(json){
     //console.log(json)
@@ -204,7 +200,9 @@ function formatDataForCharts(data,tableCode){
 function getCensusIdList(){
     if(pub.coordinatesCounter==pub.coordinates.length){
         console.log("loop return")
-        setupCensusGeoMaps()
+        console.log(pub.coordinates)
+        getData()
+        //setupCensusGeoMaps()
         return
     }
    // if(pub.coordinatesCounter==pub.coordinates.length){
@@ -223,26 +221,50 @@ function getCensusIdList(){
             pub.coordinates[pub.coordinatesCounter]["id"]=blockGroupId
             pub.coordinatesCounter=pub.coordinatesCounter+1
             var finishedIds = Object.keys(pub.returnedData)
-                if(finishedIds.indexOf(blockGroupId)>-1){
-                        getCensusIdList()
-                }else{
-                    getData(blockGroupId)
-                }
+        
+            if(pub.uniqueIds.indexOf(blockGroupId)==-1){
+                pub.uniqueIds.push(blockGroupId)
+            }
+        
+            getCensusIdList()
+             
         }
     });
 }
-function getData(geoid){
+function getDataForAllGeos(){
    
+    var geoids = tempIds.join()
+    console.log(geoids)
+    var censusReporter = "https://api.censusreporter.org/1.0/data/show/latest?table_ids="+allTables+"&geo_ids="+geoids
+    console.log(censusReporter)
+     $.getJSON(censusReporter, function( data ) {
+         console.log(data)
+     });  
+}
+
+function getData(){
+    console.log(pub.coordinates)
+    console.log(pub.uniqueIds)
+
+    
     var t1 = "B01003,B01002,B25002,B02001,B25003,B07201,B15003"
     var t2 = ",B08301,B08302,B08303"
     var t3 = ",B25064,B15012,B16002,B19001,B27010,B19013"
     var t4 = ",B19057"
     var t5 = ",B23025"
     allTables = t1+t2+t3+t4+t5
+    
+    var geoid = pub.uniqueIds[pub.uniqueIdsCounter]
    var censusReporter = "https://api.censusreporter.org/1.0/data/show/latest?table_ids="+allTables+"&geo_ids="+geoid
     $.getJSON(censusReporter, function( data ) {
         pub.returnedData[geoid]=data
-        getCensusIdList()
+        if(pub.uniqueIdsCounter==pub.uniqueIds.length-1){
+            console.log("complete")
+            setupCensusGeoMaps()
+        }else{
+            pub.uniqueIdsCounter+=1
+            getData()
+        }
     });  
 }
 

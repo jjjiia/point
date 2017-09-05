@@ -152,14 +152,14 @@ function returnColumnData(columnCode,type){
 function setupCensusGeoMaps(){
     var midpoint = pub.midpoint
     drawDirection(pub.coordinates,midpoint.lat,midpoint.lng)
-    var chartsToDrawPercent=["B07201002","B08301010","B25003003","B25002003","B19057002","B19001017","B19001002","B16002002","B16002003","B16002006","B16002009","B15012002"]
-    for(var c in chartsToDrawPercent){
-        var chartCode = chartsToDrawPercent[c]
-        console.log(chartCode)
-        var tableCode =chartCode.substr(0, chartCode.length -3)
-        addTableTitle(tableCode)
-        drawChart(chartCode,"percent")
-    }
+//    var chartsToDrawPercent=["B07201002","B08301010","B25003003","B25002003","B19057002","B19001017","B19001002","B16002002","B16002003","B16002006","B16002009","B15012002"]
+//    for(var c in chartsToDrawPercent){
+//        var chartCode = chartsToDrawPercent[c]
+//        console.log(chartCode)
+//        var tableCode =chartCode.substr(0, chartCode.length -3)
+//        addTableTitle(tableCode)
+//        drawChart(chartCode,"percent")
+//    }
     var chartsToDrawValue = ["B01002001","B19013001"]
     for(var d in chartsToDrawValue){
         var chartCode = chartsToDrawValue[d]
@@ -169,7 +169,7 @@ function setupCensusGeoMaps(){
         drawChart(chartCode,"value")
     }
     //drawChartsForTable("B02001","percent")
-    drawChartsForTable("B01002","value")
+   // drawChartsForTable("B01002","value")
     //drawChartsForTable("B19013")
     //drawChartsForTable("B23025")
 }
@@ -211,7 +211,8 @@ function drawChart(columnCode,type){
     var xAxis = d3.svg.axis()
         .scale(xScale)
         .orient("bottom")
-        .ticks(pub.points+1);
+        .ticks(10)
+        //.ticks(pub.points+1);
     var yAxis = d3.svg.axis()
         .scale(yScale)
         .orient("left")
