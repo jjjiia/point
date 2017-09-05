@@ -104,6 +104,7 @@ function getDirection(lat,lng){
                 returnPositions(lat,lng,direction)
                 return direction
         });
+        return
     }else{
         d3.select("#orientation").html("no orientation data from device")
         return undefined
