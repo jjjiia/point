@@ -47,7 +47,7 @@ function testNewGeocoder(coordinates){
 
 function returnPositions(lat,lng,direction){
      //   console.log(direction)
-    if(direction ==undefined || direction ==0){
+    if(direction ==undefined){
         direction = 100
     }
    // direction = 20
@@ -101,7 +101,7 @@ function getDirection(lat,lng){
         window.addEventListener('deviceorientation', function(event) {
                 // console.log(event.alpha + ' : ' + event.beta + ' : ' + event.gamma);
                 var direction = Math.round(event.alpha)
-                d3.select("#orientation").html("from north: "+direction+" counter: "+pub.eventCounter)
+                d3.select("#orientation").html("from north: "+direction+" counter-test2: "+pub.eventCounter)
                 pub.direction = direction
                 if(pub.eventCounter==0){
                     returnPositions(lat,lng,pub.direction)
